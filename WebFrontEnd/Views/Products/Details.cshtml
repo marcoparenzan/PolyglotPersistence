@@ -1,0 +1,79 @@
+﻿@model WebModel.ProductDetailDTO
+<div class="row">
+    <div class="col-md-12">
+        <h1>Product Detail</h1>
+        <h4>@Model.Name</h4>
+    </div>
+    <div class="col-md-6">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ProductNumber)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ProductNumber)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Color)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Color)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.StandardCost)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.StandardCost)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ListPrice)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ListPrice)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Size)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Size)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Weight)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Weight)
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-6">
+        <img alt="@Model.ThumbnailPhotoFileName" src="https://polyglotpersistence.blob.core.windows.net/webfrontendimages/@Model.ThumbnailPhotoFileName" />
+        <form action="@Url.Action("AddToCart")" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="@Model.id" />
+            <br />
+            <label for="UnitPrice">Unit Price</label>
+            <label style="font-weight:normal;">@Model.ListPrice</label>
+            <br />
+            <label for="Quantity">Quantity</label>
+            <input type="number" name="Quantity" value="@ViewBag.quantity" style="width:50px; text-align:center;" />
+            <input type="submit" value="Add to cart" class='btn btn-primary' />
+        </form>
+    </div>
+</div>

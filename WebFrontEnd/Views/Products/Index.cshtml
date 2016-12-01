@@ -1,0 +1,115 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <h1>Product Catalog</h1>
+        <label for="text">What are you looking for?</label>
+        <input class="typeahead" type="text" name="searchtext" id="searchtext" placeholder="Search for product" style="width:250px;" />
+        <a href="#" class="btn btn-primary" id="search">search</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Product Number
+                    </th>
+                    @*<th>Score</th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+@section css {
+    <style>
+
+        tr.highlight {
+            background-color: #ffd800;
+        }
+
+    </style>
+}
+@section scripts {
+    <script src="~/Scripts/typeahead.bundle.js"></script>
+    <script type="text/javascript">
+
+        function getItems(query, text, continuation, i) {
+
+            i = i || 0;
+
+            var url = '@Html.Raw(Url.Action("__query__", new { continuation = "__continuation__", text = "__text__" }))'.replace("__continuation__", continuation || "").replace("__text__", text || "").replace("__query__", query || "Items");
+
+            $.getJSON(url, function (response) {
+
+                var tbody = $("table > tbody");
+
+                $.each(response.Items, function (j, item) {
+
+                    var row = "<tr class='highlight'>" 
+                        + "<td>" + (i + j + 1) + "</td>"
+                        + "<td>" + item.Name + "</td>"
+                        + "<td>" + item.ProductNumber + "</td>"
+                        //+ "<td>" + item.SearchScore + "</td>"
+                        + "<td>" + "<a class='btn btn-default' href='@Url.Action("Details", new { id = "__id__" })'>details</a>".replace('__id__', item.id) + "</td></tr>";
+                    tbody.append(row);
+
+                });
+
+                if (response.Continuation !== undefined) {
+                    var row = "<tr class='continuation'><td colspan='4'><a class='btn btn-default continuation' href='#' class='continuation'>continue</a></td></tr>";
+                    tbody.append(row);
+                    $("a.continuation").click(function () {
+                        $("tr.continuation").remove();
+                        $("tr.highlight").removeClass("highlight");
+                        getItems(response.Query, response.Text, response.Continuation, i + response.Items.length);
+                    });
+                }
+            });
+        }
+
+        $(function () {
+
+            getItems();
+
+            $("#search").click(function () {
+                $("table tbody tr").remove();
+                getItems("SearchItems", $("#searchtext").val());
+
+            });
+
+            $('.typeahead').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 3
+            },
+            {
+                name: 'products-dataset',
+                source: function (q, cb) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Products/Suggest?text=" + q,
+                        async: false,
+                        success: function (data) {
+                            cb(data);
+                        }
+                    });
+                }
+            }).on('typeahead:selected', function (evt, item) {
+                // do what you want with the item here
+                @*debugger;
+                window.location.href = '@Url.Action("Details", new { id = "__id__" })'.replace("__id__", item.ProductId);*@
+            });
+
+        });
+
+
+    </script>
+}

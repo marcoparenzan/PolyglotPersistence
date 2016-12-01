@@ -1,0 +1,65 @@
+﻿
+<div class="row">
+    <div class="col-md-12">
+        <h1>Shopping Cart</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                    </th>
+                    <th>
+                        Product
+                    </th>
+                    <th>Quantity</th>
+                    <th>
+                        Currency
+                    </th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <a href="@Url.Action("SubmitOrder")" class='btn btn-primary'>Submit Order</a>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+
+        function getItems() {
+
+            var url = '@Url.Action("ShoppingCartItems")';
+
+            $.getJSON(url, function (response) {
+
+                var tbody = $("table > tbody");
+
+                $.each(response.Items, function (j, item) {
+
+                    var row = "<tr class='highlight'>"
+                        + "<td>" + (j + 1) + "</td>"
+                        + "<td>" + item.ProductDescription + "</td>"
+                        + "<td>" + item.Quantity + "</td>"
+                        + "<td>" + item.Currency + "</td>"
+                        + "<td>" + item.UnitPrice + "</td>"
+                        + "<td>" + item.TotalPrice + "</td>"
+                        + "<td>" + "<a class='btn btn-default' href='@Url.Action("Details", new { id = "__id__", quantity = "__quantity__" })'>edit</a>".replace('__id__', item.ProductId).replace('__quantity__', item.Quantity) + "</td>"
+                        + "<td>" + "<a class='btn btn-default' href='@Url.Action("RemoveFromCart", new { id = "__id__" })'>remove</a>".replace('__id__', item.ProductId) + "</td>"
+                        + "</tr>";
+                    tbody.append(row);
+
+                });
+            });
+        }
+
+        $(function () {
+
+            getItems();
+
+        });
+
+
+    </script>
+}
